@@ -8,6 +8,18 @@ Custom tool for Latin text lemmatisation. Uses an extracted copy of the [CLTK](h
 * Created by [Mitchell G. Harris](https://github.com/mitchopt/) | GitHub [@mitchopt](https://github.com/mitchopt) | PyPI [@mitchopt](https://pypi.org/user/mitchopt/)
 * MIT License
 
+## Usage
+An --input-parameters option pointing to a yaml file is necessary.
+```bash
+uv run latin_lemmatizer --input-parameters ./input_parameters.yaml
+```
+The input parameters yaml **must** specify `text_path` and `output_path` values
+```yaml
+# ./input_parameters.yaml
+text_path: "./data/test.txt"
+output_path: "./outputs/test.csv"
+```
+
 ## Features
 
 * TODO
