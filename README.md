@@ -2,7 +2,7 @@
 
 ![PyPI version](https://img.shields.io/pypi/v/latin-lemmatizer.svg)
 
-Custom tool for Latin text lemmatisation. Uses an extracted copy of the CLTK lemmata data set, but does not explicitly depend on CLTK.
+Custom tool for Latin text lemmatisation. Uses an extracted copy of the [CLTK](https://cltk.org/) Latin lemmata data, but does not explicitly depend on CLTK.
 
 * [GitHub](https://github.com/mitchopt/latin-lemmatizer/) | [PyPI](https://pypi.org/project/latin-lemmatizer/) | [Documentation](https://mitchopt.github.io/latin-lemmatizer/)
 * Created by [Mitchell G. Harris](https://github.com/mitchopt/) | GitHub [@mitchopt](https://github.com/mitchopt) | PyPI [@mitchopt](https://pypi.org/user/mitchopt/)
