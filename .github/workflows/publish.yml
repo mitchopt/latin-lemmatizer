@@ -19,7 +19,6 @@ jobs:
         with:
           persist-credentials: false
 
-      # Cache disabled to prevent cache-poisoning attacks on release artifacts.
       - uses: astral-sh/setup-uv@eac588ad8def6316056a12d4907a9d4d84ff7a3b # v7.3.0
         with:
           enable-cache: false
@@ -34,17 +33,14 @@ jobs:
           path: dist/
 
   publish:
-    name: Publish to PyPI
+    name: Publish to TestPyPI
     needs: build
     runs-on: ubuntu-latest
     permissions:
       id-token: write
       attestations: write
-    # Requires environment protection rules in GitHub Settings:
-    # Settings > Environments > pypi > Add required reviewers
-    # and restrict deployment to v* tags.
     environment:
-      name: pypi
+      name: testpypi
       url: https://test.pypi.org/p/latin-lemmatizer
     steps:
       - name: Download distribution
@@ -54,9 +50,11 @@ jobs:
           path: dist/
 
       - name: Attest build provenance
-        uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
+        uses: actions/attest-build-provenance@a2bbfa25375fe832b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         with:
           subject-path: "dist/*"
 
-      - name: Publish to PyPI
+      - name: Publish to TestPyPI
         uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e # v1.13.0
+        with:
+          repository-url: https://test.pypi.org/legacy/
