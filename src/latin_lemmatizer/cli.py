@@ -59,38 +59,34 @@ def main(input_parameters: Annotated[Path, typer.Option(resolve_path=True)]):
             if word.endswith("que"):  # Strip -que suffix
                 word = word[:-3]
 
+            # Initial lemma lookup
+            lemma = LEMMATA.get(word)
+
+            # If a word starts with a capital letter and fails to lemmatize then it is
+            # probably not a proper noun. This is because most proper nouns in the CLTK lemmata
+            # dataset correctly begin with an upper case letter and lemmatize successfully,
+            # wheras other words that start with an upper case letter are likely to fail.
+            if word[0].isupper():
+                if lemma is None:
+                    word = word.lower()
+                    lemma = LEMMATA.get(word)
+                if lemma is not None:
+                    lemma_stripped = lemma.translate(str.maketrans("", "", "1234"))
+                    if lemma_stripped not in inputs.names:
+                        word = word.lower()
+                        lemma = LEMMATA.get(word)
+
             # Apply word word overrides
             if word in inputs.word_word_overrides:
                 word = inputs.word_word_overrides[word]
-
-            # Initial lemma lookup
-            lemma = LEMMATA.get(word)
 
             # Apply word lemma overrides
             if word in inputs.word_lemma_overrides:
                 lemma = inputs.word_lemma_overrides[word]
 
-            # Word lemma overrides give a user specified lemma for a word, so we can skip further processing
-            else:
-                # Check if word is upper case
-                if word[0].isupper():
-                    # Check if the word is not a proper noun
-                    if lemma is not None:
-                        lemma_stripped = lemma.translate(str.maketrans("", "", "1234"))
-                        if lemma_stripped not in inputs.names:
-                            word = word.lower()
-                            lemma = LEMMATA.get(word)
-
-                    # If the lemma is none, try the lower case word. If that works then use it
-                    else:
-                        word_lower = word.lower()
-                        lemma_lower = LEMMATA.get(word_lower)
-                        if lemma_lower is not None:
-                            word, lemma = word_lower, lemma_lower
-
-                # Apply lemma lemma overrides
-                if lemma in inputs.lemma_lemma_overrides:
-                    lemma = inputs.lemma_lemma_overrides[lemma]
+            # Apply lemma lemma overrides
+            if lemma in inputs.lemma_lemma_overrides:
+                lemma = inputs.lemma_lemma_overrides[lemma]
 
             # If the lemma is still none then add it to the bad words set and move on
             if lemma is None:
