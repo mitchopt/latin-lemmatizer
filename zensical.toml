@@ -1,8 +1,8 @@
 [project]
 site_name = "Latin Lemmatizer"
-site_url = "https://mitchopt.github.io/Latin-Lemmatizer/"
-repo_url = "https://github.com/mitchopt/Latin-Lemmatizer"
-repo_name = "mitchopt/Latin-Lemmatizer"
+site_url = "https://mitchopt.github.io/latin-lemmatizer/"
+repo_url = "https://github.com/mitchopt/latin-lemmatizer"
+repo_name = "mitchopt/latin-lemmatizer"
 
 nav = [
   { "Home" = "index.md" },

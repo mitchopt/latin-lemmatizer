@@ -8,7 +8,7 @@ You can contribute in many ways:
 
 ### Report Bugs
 
-Report bugs at https://github.com/mitchopt/Latin-Lemmatizer/issues.
+Report bugs at https://github.com/mitchopt/latin-lemmatizer/issues.
 
 If you are reporting a bug, please include:
 
@@ -38,7 +38,7 @@ This starts a local server at http://localhost:8000 with live reload. Edit files
 
 ### Submit Feedback
 
-The best way to send feedback is to file an issue at https://github.com/mitchopt/Latin-Lemmatizer/issues.
+The best way to send feedback is to file an issue at https://github.com/mitchopt/latin-lemmatizer/issues.
 
 If you are proposing a feature:
 
@@ -48,19 +48,19 @@ If you are proposing a feature:
 
 ## Get Started!
 
-Ready to contribute? Here's how to set up Latin-Lemmatizer for local development.
+Ready to contribute? Here's how to set up latin-lemmatizer for local development.
 
-1. Fork the Latin-Lemmatizer repo on GitHub.
+1. Fork the latin-lemmatizer repo on GitHub.
 2. Clone your fork locally:
 
    ```sh
-   git clone git@github.com:your_name_here/Latin-Lemmatizer.git
+   git clone git@github.com:your_name_here/latin-lemmatizer.git
    ```
 
 3. Install your local copy with uv:
 
    ```sh
-   cd Latin-Lemmatizer/
+   cd latin-lemmatizer/
    uv sync
    ```
 

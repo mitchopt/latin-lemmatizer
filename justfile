@@ -1,4 +1,4 @@
-# Justfile for Latin-Lemmatizer
+# Justfile for latin-lemmatizer
 
 # Show available commands
 list:

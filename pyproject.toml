@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "Latin-Lemmatizer"
+name = "latin-lemmatizer"
 version = "0.1.0"
 description = "Custom tool for Latin text lemmatisation using CLTK"
 readme = "README.md"
@@ -49,10 +49,10 @@ docs = [
 ]
 
 [project.urls]
-bugs = "https://github.com/mitchopt/Latin-Lemmatizer/issues"
-changelog = "https://github.com/mitchopt/Latin-Lemmatizer/releases"
-documentation = "https://mitchopt.github.io/Latin-Lemmatizer/"
-homepage = "https://github.com/mitchopt/Latin-Lemmatizer"
+bugs = "https://github.com/mitchopt/latin-lemmatizer/issues"
+changelog = "https://github.com/mitchopt/latin-lemmatizer/releases"
+documentation = "https://mitchopt.github.io/latin-lemmatizer/"
+homepage = "https://github.com/mitchopt/latin-lemmatizer"
 
 [project.scripts]
 latin_lemmatizer = "latin_lemmatizer.cli:app"

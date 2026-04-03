@@ -1,10 +1,10 @@
 # Latin Lemmatizer
 
-![PyPI version](https://img.shields.io/pypi/v/Latin-Lemmatizer.svg)
+![PyPI version](https://img.shields.io/pypi/v/latin-lemmatizer.svg)
 
 Custom tool for Latin text lemmatisation using CLTK
 
-* [GitHub](https://github.com/mitchopt/Latin-Lemmatizer/) | [PyPI](https://pypi.org/project/Latin-Lemmatizer/) | [Documentation](https://mitchopt.github.io/Latin-Lemmatizer/)
+* [GitHub](https://github.com/mitchopt/latin-lemmatizer/) | [PyPI](https://pypi.org/project/latin-lemmatizer/) | [Documentation](https://mitchopt.github.io/latin-lemmatizer/)
 * Created by [Mitchell G. Harris](https://github.com/mitchopt/) | GitHub [@mitchopt](https://github.com/mitchopt) | PyPI [@mitchopt](https://pypi.org/user/mitchopt/)
 * MIT License
 
@@ -16,7 +16,7 @@ Custom tool for Latin text lemmatisation using CLTK
 
 Documentation is built with [Zensical](https://zensical.org/) and deployed to GitHub Pages.
 
-* **Live site:** https://mitchopt.github.io/Latin-Lemmatizer/
+* **Live site:** https://mitchopt.github.io/latin-lemmatizer/
 * **Preview locally:** `just docs-serve` (serves at http://localhost:8000)
 * **Build:** `just docs-build`
 
@@ -30,8 +30,8 @@ To set up for local development:
 
 ```bash
 # Clone your fork
-git clone git@github.com:your_username/Latin-Lemmatizer.git
-cd Latin-Lemmatizer
+git clone git@github.com:your_username/latin-lemmatizer.git
+cd latin-lemmatizer
 
 # Install in editable mode with live updates
 uv tool install --editable .

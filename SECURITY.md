@@ -2,7 +2,7 @@
 
 ## Reporting a Vulnerability
 
-If you find a security vulnerability in Latin Lemmatizer, please report it through [GitHub's private vulnerability reporting](https://github.com/mitchopt/Latin-Lemmatizer/security/advisories/new). This keeps the details private while we work on a fix.
+If you find a security vulnerability in Latin Lemmatizer, please report it through [GitHub's private vulnerability reporting](https://github.com/mitchopt/latin-lemmatizer/security/advisories/new). This keeps the details private while we work on a fix.
 
 Please include:
 
