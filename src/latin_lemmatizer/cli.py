@@ -16,6 +16,7 @@ from typing import Annotated
 import typer
 import yaml
 from cltk.alphabet.lat import normalize_lat
+from cltk.data.fetch import FetchCorpus
 from cltk.lemmatize.lat import LatinBackoffLemmatizer
 from rich.console import Console
 
@@ -23,11 +24,22 @@ app = typer.Typer()
 console = Console()
 
 
+# these params are paths, we want to convert them from relative to absolute
+path_params = {"text_path", "word_overrides_path", "proper_names_path", "output_filepath"}
+
+
 @app.command()
-def main(input_parameters: Annotated[Path, typer.Option()]):
+def main(input_parameters: Annotated[Path, typer.Option(resolve_path=True)]):
     # Load and validate the input parameters file
     with open(input_parameters, encoding="utf-8") as file:
         params = yaml.safe_load(file)
+    for param_key in params.keys():
+        if param_key in path_params:
+            # make the filepaths into Path objects
+            params[param_key] = Path(params[param_key])
+        if not params[param_key].is_absolute():
+            # make the filepaths absolute relative to the input file locations if they are not already absolute
+            params[param_key] = input_parameters.parent / params[param_key]
     console.print(f"Loaded the following parameters from {input_parameters}")
     for key, val in params.items():
         console.print(f"{key}: {val}")
@@ -59,6 +71,14 @@ def main(input_parameters: Annotated[Path, typer.Option()]):
 
     # Punctuation string
     punctuation = string.punctuation + "“”‘’—…"
+
+    # check / gather necessary cltk_data
+    try:
+        LatinBackoffLemmatizer()
+    except FileNotFoundError:
+        console.print("Missing required data, downloading lat, lat_models_cltk")
+        corpus_downloader = FetchCorpus(language="lat")
+        corpus_downloader.import_corpus("lat_models_cltk")
 
     # Initialise the lemmatiser
     console.print("Now running the lemmatiser...")
@@ -98,6 +118,7 @@ def main(input_parameters: Annotated[Path, typer.Option()]):
             output_data[lemma[1]] = {"freq": 1, "hits": set([lemma[0]])}
 
     console.print(f"Writing output CSV to {params['output_filepath']}...")
+    params["output_filepath"].parent.mkdir(parents=True, exist_ok=True)
     with open(params["output_filepath"], "w", encoding="utf-8") as csvfile:
         writer = csv.writer(csvfile, delimiter=",")
         writer.writerow(["lemma", "frequency", "hits..."])
