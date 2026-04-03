@@ -6,11 +6,10 @@ Accepts an input parameters file in YAML format with the following keys:
 - word_overrides_path: the path to a CSV file containing custom word overrides
 - lemma_overrides_path: the path to a CSV file containing custom lemma overrides
 - proper_names_path: the path to a text file listing proper names (one per line)
-- output_filepath: the path to the output CSV file to be generated
+- output_path: the path to the output CSV file to be generated
 
 """
 
-import csv
 import string
 from pathlib import Path
 from typing import Annotated
@@ -19,7 +18,7 @@ import typer
 from rich.console import Console
 
 from latin_lemmatizer.lemmata import LEMMATA
-from latin_lemmatizer.utils import drop_macrons, load_from_parameters_yaml, load_parameters_yaml
+from latin_lemmatizer.utils import drop_macrons, load_from_parameters_yaml, load_parameters_yaml, write_output_csv
 
 app = typer.Typer()
 console = Console()
@@ -27,6 +26,7 @@ console = Console()
 
 @app.command()
 def main(input_parameters: Annotated[Path, typer.Option(resolve_path=True)]):
+    console.print("[green]Running Latin Lemmatizer[/green]")
     # Load the input parameters yaml file
     params = load_parameters_yaml(input_parameters, console)
     if params is None:
@@ -69,7 +69,7 @@ def main(input_parameters: Annotated[Path, typer.Option(resolve_path=True)]):
             # Apply word lemma overrides
             if word in inputs.word_lemma_overrides:
                 lemma = inputs.word_lemma_overrides[word]
-            
+
             # Word lemma overrides give a user specified lemma for a word, so we can skip further processing
             else:
                 # Check if word is upper case
@@ -104,16 +104,15 @@ def main(input_parameters: Annotated[Path, typer.Option(resolve_path=True)]):
             else:
                 output_data[lemma] = {"freq": 1, "hits": set([word])}
 
-    # Sort output data by frequency
-    output_data_sorted_items = sorted(output_data.items(), key=lambda x: x[1]["freq"], reverse=True)
+    # Log any bad words to the console
+    if bad_words:
+        console.print(f"\n[purple]Failed to lemmatise the following [red]{len(bad_words)}[/red] words:[/purple]")
+        for word in bad_words:
+            console.print(f"[purple] {word}[/purple]")
 
-    # console.print(f"Writing output CSV to {params['output_filepath']}...")
-    with open(params["output_filepath"], "w", encoding="utf-8", newline="") as csvfile:
-        writer = csv.writer(csvfile, delimiter=",")
-        writer.writerow(["lemma", "frequency", "hits..."])
-        for item in output_data_sorted_items:
-            row = [item[0], item[1]["freq"]] + sorted(list(item[1]["hits"]))
-            writer.writerow(row)
+    # Sort output data by frequency and then write the output CSV
+    output_data_sorted_items = sorted(output_data.items(), key=lambda x: x[1]["freq"], reverse=True)
+    write_output_csv(output_data_sorted_items, params, console)
 
 
 if __name__ == "__main__":

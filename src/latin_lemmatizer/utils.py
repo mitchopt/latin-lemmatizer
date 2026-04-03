@@ -19,10 +19,14 @@ def drop_macrons(word):
 def load_parameters_yaml(input_parameters, console):
     try:
         with open(input_parameters, encoding="utf-8") as file:
-            return yaml.safe_load(file)
+            params = yaml.safe_load(file)
     except FileNotFoundError:
         console.print(f"[red]Error: could not find the specified input parameters file:\n {input_parameters} [/red]")
         return None
+    if "output_path" not in params:
+        console.print("[red]Error: 'output_path' is missing from the input parameters yaml.[/red]")
+        return None
+    return params
 
 
 @dataclass
@@ -44,6 +48,9 @@ def load_from_parameters_yaml(params, console):
     try:
         with open(params["text_path"], encoding="utf-8") as file:
             lines = file.readlines()
+        if lines:
+            console.print(f"Loaded text file with [green]{len(lines)}[/green] lines. Here is the first one:")
+            console.print(f"[yellow]{lines[0].translate(str.maketrans('', '', '\n'))}[/yellow]")
     except KeyError:
         console.print('[red]Error: "text_path" is missing from the input parameters file.')
         fail = True
@@ -108,3 +115,13 @@ def load_from_parameters_yaml(params, console):
             word_lemma_overrides=word_lemma_overrides if "word_lemma_overrides_path" in params else {},
             names=names if "proper_nouns_path" in params else set(),
         )
+
+
+def write_output_csv(output_data_sorted_items, params, console):
+    console.print(f"Writing output CSV to [green]{params['output_path']}[/green]")
+    with open(params["output_path"], "w", encoding="utf-8", newline="") as csvfile:
+        writer = csv.writer(csvfile, delimiter=",")
+        writer.writerow(["lemma", "frequency", "hits..."])
+        for item in output_data_sorted_items:
+            row = [item[0], item[1]["freq"]] + sorted(list(item[1]["hits"]))
+            writer.writerow(row)
