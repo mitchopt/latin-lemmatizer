@@ -16,58 +16,36 @@ from pathlib import Path
 from typing import Annotated
 
 import typer
-import yaml
 from rich.console import Console
 
 from latin_lemmatizer.lemmata import LEMMATA
-from latin_lemmatizer.utils import drop_macrons
+from latin_lemmatizer.utils import drop_macrons, load_from_parameters_yaml, load_parameters_yaml
 
 app = typer.Typer()
 console = Console()
 
 
-# these params are paths, we want to convert them from relative to absolute
-path_params = {"text_path", "word_overrides_path", "proper_names_path", "output_filepath"}
-
-
 @app.command()
 def main(input_parameters: Annotated[Path, typer.Option(resolve_path=True)]):
-    # Load and validate the input parameters file
-    with open(input_parameters, encoding="utf-8") as file:
-        params = yaml.safe_load(file)
-    console.print(f"Loaded parameters file {input_parameters}")
-    stop = False
-    for key in ["text_path", "word_overrides_path", "lemma_overrides_path", "proper_names_path", "output_filepath"]:
-        if key not in params:
-            console.print(f"[red]Error: Missing required parameter {key} in {input_parameters}[/red]")
-            stop = True
-    if stop:
+    # Load the input parameters yaml file
+    params = load_parameters_yaml(input_parameters, console)
+    if params is None:
+        console.print("[red]\n       Failed to load input parameters yaml.[/red]")
+        console.print("[red]       Terminating program.[/red]")
         return
 
-    # Load the text file
-    with open(params["text_path"], encoding="utf-8") as file:
-        lines = file.readlines()
-    console.print("\nLoaded the text file successfully. Here is the first line!")
-    console.print(f"[yellow]{lines[0].replace('\n', ' ')}[/yellow]\n")
+    # Load the input parameters from the params dictionary
+    inputs = load_from_parameters_yaml(params, console)
+    if inputs is None:
+        console.print("[red]\n       Failed to load input files.[/red]")
+        console.print("[red]       Terminating program.[/red]")
+        return
 
-    # Load the proper names
-    console.print(f"Loading proper names from {params['proper_names_path']}...")
-    with open(params["proper_names_path"], encoding="utf-8") as file:
-        names = set()
-        for name in file:
-            names.add(name.strip())
-
-    # Load the word overrides
-    console.print(f"Loading custom word overrides from {params['word_overrides_path']}...")
-    with open(params["word_overrides_path"], encoding="utf-8") as csvfile:
-        reader = csv.reader(csvfile)
-        word_overrides = {row[0]: row[1].strip() for row in reader}
-
-    # Load the lemma overrides
-    console.print(f"Loading custom lemma overrides from {params['lemma_overrides_path']}...")
-    with open(params["lemma_overrides_path"], encoding="utf-8") as csvfile:
-        reader = csv.reader(csvfile)
-        lemma_overrides = {row[0]: row[1].strip() for row in reader}
+    # Grab the inputs for ease of use
+    lines = inputs.lines
+    word_overrides = inputs.word_overrides
+    lemma_overrides = inputs.lemma_overrides
+    names = inputs.names
 
     # Punctuation string
     punctuation = string.punctuation + "“”‘’—…"
@@ -77,7 +55,7 @@ def main(input_parameters: Annotated[Path, typer.Option(resolve_path=True)]):
     bad_words = set()
 
     # Iterate the lines
-    console.print("Now running the lemmatiser...")
+    # console.print("Now running the lemmatiser...")
     for line in lines:
         line = line.translate(str.maketrans("", "", punctuation))  # Remove punctuation
         line = drop_macrons(line)  # Drop macrons
@@ -102,7 +80,7 @@ def main(input_parameters: Annotated[Path, typer.Option(resolve_path=True)]):
                         word = word.lower()
                         lemma = LEMMATA.get(word)
 
-                # If the lemmas is none, try the lower case word. If that works then use it
+                # If the lemma is none, try the lower case word. If that works then use it
                 else:
                     word_lower = word.lower()
                     lemma_lower = LEMMATA.get(word_lower)
@@ -128,7 +106,7 @@ def main(input_parameters: Annotated[Path, typer.Option(resolve_path=True)]):
     # Sort output data by frequency
     output_data_sorted_items = sorted(output_data.items(), key=lambda x: x[1]["freq"], reverse=True)
 
-    console.print(f"Writing output CSV to {params['output_filepath']}...")
+    # console.print(f"Writing output CSV to {params['output_filepath']}...")
     with open(params["output_filepath"], "w", encoding="utf-8", newline="") as csvfile:
         writer = csv.writer(csvfile, delimiter=",")
         writer.writerow(["lemma", "frequency", "hits..."])
