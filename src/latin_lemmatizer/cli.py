@@ -41,11 +41,17 @@ def main(input_parameters: Annotated[Path, typer.Option(resolve_path=True)]):
         console.print("[red]       Terminating program.[/red]")
         return
 
-    # Grab the inputs for ease of use
-    lines = inputs.lines
-    word_overrides = inputs.word_overrides
-    lemma_overrides = inputs.lemma_overrides
-    names = inputs.names
+    print(inputs.lemma_lemma_overrides)
+    print(inputs.word_word_overrides)
+    print(inputs.word_lemma_overrides)
+    print(len(inputs.names))
+    print(len(inputs.lines))
+
+    # # Grab the inputs for ease of use
+    # lines = inputs.lines
+    # word_overrides = inputs.word_overrides
+    # lemma_overrides = inputs.lemma_overrides
+    # names = inputs.names
 
     # Punctuation string
     punctuation = string.punctuation + "“”‘’—…"
@@ -56,7 +62,7 @@ def main(input_parameters: Annotated[Path, typer.Option(resolve_path=True)]):
 
     # Iterate the lines
     # console.print("Now running the lemmatiser...")
-    for line in lines:
+    for line in inputs.lines:
         line = line.translate(str.maketrans("", "", punctuation))  # Remove punctuation
         line = drop_macrons(line)  # Drop macrons
         words = line.split()  # Split the line into words
@@ -65,8 +71,8 @@ def main(input_parameters: Annotated[Path, typer.Option(resolve_path=True)]):
                 word = word[:-3]
 
             # Apply word overrides
-            if word in word_overrides:
-                word = word_overrides[word]
+            if word in inputs.word_word_overrides:
+                word = inputs.word_word_overrides[word]
 
             # Initial lemma lookup
             lemma = LEMMATA.get(word)
@@ -76,7 +82,7 @@ def main(input_parameters: Annotated[Path, typer.Option(resolve_path=True)]):
                 # Check if the word is a proper name
                 if lemma is not None:
                     lemma_stripped = lemma.translate(str.maketrans("", "", "1234"))
-                    if lemma_stripped not in names:
+                    if lemma_stripped not in inputs.names:
                         word = word.lower()
                         lemma = LEMMATA.get(word)
 
@@ -88,8 +94,8 @@ def main(input_parameters: Annotated[Path, typer.Option(resolve_path=True)]):
                         word, lemma = word_lower, lemma_lower
 
             # Check for lemma overrides
-            if lemma in lemma_overrides:
-                lemma = lemma_overrides[lemma]
+            if lemma in inputs.lemma_lemma_overrides:
+                lemma = inputs.lemma_lemma_overrides[lemma]
 
             # If the lemma is still none then add it to the bad words set and move on
             if lemma is None:

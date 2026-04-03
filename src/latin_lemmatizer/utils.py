@@ -30,8 +30,9 @@ class Inputs:
     """Class for holding inputs loaded from the parameters file."""
 
     lines: list
-    word_overrides: dict
-    lemma_overrides: dict
+    word_word_overrides: dict
+    lemma_lemma_overrides: dict
+    word_lemma_overrides: dict
     names: set
 
 
@@ -50,38 +51,49 @@ def load_from_parameters_yaml(params, console):
         console.print(f"[red]Error: could not find the specified text file:\n {params['text_path']}[/red]")
         fail = True
 
-    # Load the word overrides if provided
-    if "word_overrides_path" in params:
+    # Load the word to word overrides if provided
+    if "word_word_overrides_path" in params:
         try:
-            with open(params["word_overrides_path"], encoding="utf-8") as csvfile:
+            with open(params["word_word_overrides_path"], encoding="utf-8") as csvfile:
                 reader = csv.reader(csvfile)
-                word_overrides = {row[0]: row[1].strip() for row in reader}
+                word_word_overrides = {row[0]: row[1].strip() for row in reader}
         except FileNotFoundError:
             console.print("[red]Error: could not find the specified word overrides file:[/red]")
-            console.print(f"[red]{params['word_overrides_path']}[/red]")
+            console.print(f"[red]{params['word_word_overrides_path']}[/red]")
             fail = True
 
-    # Load the lemma overrides if provided
-    if "lemma_overrides_path" in params:
+    # Load the lemma to lemma overrides if provided
+    if "lemma_lemma_overrides_path" in params:
         try:
-            with open(params["lemma_overrides_path"], encoding="utf-8") as csvfile:
+            with open(params["lemma_lemma_overrides_path"], encoding="utf-8") as csvfile:
                 reader = csv.reader(csvfile)
-                lemma_overrides = {row[0]: row[1].strip() for row in reader}
+                lemma_lemma_overrides = {row[0]: row[1].strip() for row in reader}
         except FileNotFoundError:
             console.print("[red]Error: could not find the specified lemma overrides file:[/red]")
-            console.print(f"[red]{params['lemma_overrides_path']}[/red]")
+            console.print(f"[red]{params['lemma_lemma_overrides_path']}[/red]")
+            fail = True
+
+    # Load the word to lemma overrides if provided
+    if "word_lemma_overrides_path" in params:
+        try:
+            with open(params["word_lemma_overrides_path"], encoding="utf-8") as csvfile:
+                reader = csv.reader(csvfile)
+                word_lemma_overrides = {row[0]: row[1].strip() for row in reader}
+        except FileNotFoundError:
+            console.print("[red]Error: could not find the specified word to lemma overrides file:[/red]")
+            console.print(f"[red]{params['word_lemma_overrides_path']}[/red]")
             fail = True
 
     # Load the proper names if provided
-    if "proper_names_path" in params:
+    if "proper_nouns_path" in params:
         try:
-            with open(params["proper_names_path"], encoding="utf-8") as file:
+            with open(params["proper_nouns_path"], encoding="utf-8") as file:
                 names = set()
                 for name in file:
                     names.add(name.strip())
         except FileNotFoundError:
             console.print("[red]Error: could not find the specified proper nouns file:[/red]")
-            console.print(f"[red]{params['proper_names_path']}[/red]")
+            console.print(f"[red]{params['proper_nouns_path']}[/red]")
             fail = True
 
     # Return None on failure
@@ -91,7 +103,8 @@ def load_from_parameters_yaml(params, console):
     else:
         return Inputs(
             lines=lines,
-            word_overrides=word_overrides if "word_overrides_path" in params else {},
-            lemma_overrides=lemma_overrides if "lemma_overrides_path" in params else {},
+            word_word_overrides=word_word_overrides if "word_word_overrides_path" in params else {},
+            lemma_lemma_overrides=lemma_lemma_overrides if "lemma_lemma_overrides_path" in params else {},
+            word_lemma_overrides=word_lemma_overrides if "word_lemma_overrides_path" in params else {},
             names=names if "proper_nouns_path" in params else set(),
         )
