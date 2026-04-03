@@ -49,7 +49,6 @@ def main(input_parameters: Annotated[Path, typer.Option(resolve_path=True)]):
     bad_words = set()
 
     # Iterate the lines
-    # console.print("Now running the lemmatiser...")
     for line in inputs.lines:
         line = line.translate(str.maketrans("", "", punctuation))  # Remove punctuation
         line = drop_macrons(line)  # Drop macrons
@@ -79,6 +78,7 @@ def main(input_parameters: Annotated[Path, typer.Option(resolve_path=True)]):
             # Apply word word overrides
             if word in inputs.word_word_overrides:
                 word = inputs.word_word_overrides[word]
+                lemma = LEMMATA.get(word)
 
             # Apply word lemma overrides
             if word in inputs.word_lemma_overrides:

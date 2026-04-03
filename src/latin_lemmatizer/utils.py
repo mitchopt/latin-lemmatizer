@@ -63,7 +63,7 @@ def load_from_parameters_yaml(params, console):
         try:
             with open(params["word_word_overrides_path"], encoding="utf-8") as csvfile:
                 reader = csv.reader(csvfile)
-                word_word_overrides = {row[0]: row[1].strip() for row in reader}
+                word_word_overrides = {row[0]: row[1].strip() for row in reader if len(row) == 2}
         except FileNotFoundError:
             console.print("[red]Error: could not find the specified word overrides file:[/red]")
             console.print(f"[red]{params['word_word_overrides_path']}[/red]")
@@ -74,7 +74,7 @@ def load_from_parameters_yaml(params, console):
         try:
             with open(params["lemma_lemma_overrides_path"], encoding="utf-8") as csvfile:
                 reader = csv.reader(csvfile)
-                lemma_lemma_overrides = {row[0]: row[1].strip() for row in reader}
+                lemma_lemma_overrides = {row[0]: row[1].strip() for row in reader if len(row) == 2}
         except FileNotFoundError:
             console.print("[red]Error: could not find the specified lemma overrides file:[/red]")
             console.print(f"[red]{params['lemma_lemma_overrides_path']}[/red]")
@@ -85,7 +85,7 @@ def load_from_parameters_yaml(params, console):
         try:
             with open(params["word_lemma_overrides_path"], encoding="utf-8") as csvfile:
                 reader = csv.reader(csvfile)
-                word_lemma_overrides = {row[0]: row[1].strip() for row in reader}
+                word_lemma_overrides = {row[0]: row[1].strip() for row in reader if len(row) == 2}
         except FileNotFoundError:
             console.print("[red]Error: could not find the specified word to lemma overrides file:[/red]")
             console.print(f"[red]{params['word_lemma_overrides_path']}[/red]")
