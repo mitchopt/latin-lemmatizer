@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "latin-lemmatizer"
 version = "0.1.0"
-description = "Custom tool for Latin text lemmatisation using CLTK"
+description = "Custom tool for Latin text lemmatisation based on the CLTK latin Lemmata data"
 readme = "README.md"
 authors = [
   {name = "Mitchell G. Harris", email = "mitchopt@gmail.com"}
