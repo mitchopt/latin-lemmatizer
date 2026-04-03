@@ -20,10 +20,6 @@ text_path: "./data/test.txt"
 output_path: "./outputs/test.csv"
 ```
 
-## Features
-
-* TODO
-
 ## Documentation
 
 Documentation is built with [Zensical](https://zensical.org/) and deployed to GitHub Pages.
